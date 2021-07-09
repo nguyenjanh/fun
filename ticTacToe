@@ -1,0 +1,187 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class ticTacToe {
+
+	public static int result(String[][] board) {
+		
+		/*
+		 * 0 = no winner
+		 * 1 = x wins
+		 * 2 = o wins
+		 * 3 = tie game
+		 */
+		
+		for (int a = 0; a < 3; a++) {
+			if (board[a][0].equals(board[a][1]) && board[a][0].equals(board[a][2])) {
+				if (board[a][0].equals("X") && board[a][2].equals("X"))
+					return 1;
+				else if (board[2][0].equals("O") && board[a][2].equals("O"))
+					return 2;
+			}
+		}
+		
+		for (int a = 0; a < 3; a++) {
+			if (board[0][a].equals(board[1][a]) && board[0][a].equals(board[2][a])) {
+				if (board[0][a].equals("X") && board[2][a].equals("X"))
+					return 1;
+				else if (board[0][a].equals("O") && board[2][a].equals("O"))
+					return 2;
+			}
+		}
+		
+		if (board[0][0].equals(board[1][1]) && board[0][0].equals(board[2][2])) {
+			if (board[0][0].equals("X") && board[2][2].equals("X"))
+				return 1;
+			else if (board[0][0].equals("O") && board[2][2].equals("O"))
+				return 2;
+		}
+		
+		if (board[2][0].equals(board[1][1]) && board[2][0].equals(board[0][2])) {
+			if (board[2][0].equals("X") && board[0][2].equals("X"))
+				return 1;
+			else if (board[2][0].equals("O") && board[0][2].equals("O"))
+				return 2;
+		}
+		
+		if (checkTie(board)) return 3;
+		
+		return 0;
+		
+	}
+	
+	
+	public static void printBoard(String[][] board) {
+		
+		System.out.println("-------");
+		
+		for (int c = 0; c < board.length; c++) {
+			
+			System.out.print("|");
+			
+			for (int d = 0; d < board.length; d++) {
+				
+				System.out.print(board[c][d] + "|");
+				
+			}	
+			
+			System.out.println();
+			System.out.println("-------");
+			
+		}
+		
+	}
+	
+	
+	public static void resetBoard(String[][] board) {
+		
+		for (int a = 0; a < board.length; a++) 
+			for (int b = 0; b < board.length; b++) 
+				board[a][b] = "-";
+		
+	}
+	
+	
+	public static boolean checkValid(String[] moves, String input) {
+		
+		if (input.equals("-"))
+			return false;
+		
+		for (int a = 0; a < moves.length; a++)
+			if (moves[a].equals(input)) {
+				moves[a] = "-";
+				return false;
+			}
+		return true;
+	}
+	
+	
+	public static void playerTurn(String[][]board, String[] possibleMoves, String player) {
+		
+		System.out.println("Player " + player + ", it is your turn. Select a square.");
+		Scanner userInput = new Scanner(System.in);
+		String intake = userInput.next();
+		
+		while (checkValid(possibleMoves, intake)) {
+			
+			System.out.println("You selected an invalid square. Please choose one of the following :");
+			System.out.println(Arrays.toString(possibleMoves));
+			userInput = new Scanner(System.in);
+			intake = userInput.next();
+			
+		}
+		
+		int xCoor = 0, yCoor = Integer.parseInt(intake.substring(1)) - 1;
+		
+		if (intake.substring(0,1).equals("A"))
+			xCoor = 0;
+		else if (intake.substring(0,1).equals("B"))
+			xCoor = 1;
+		else if (intake.substring(0,1).equals("C"))
+			xCoor = 2;	
+		
+		board[xCoor][yCoor] = player;
+		
+		printBoard(board);
+		
+	}
+	
+	public static boolean checkTie(String[][] board) {
+		
+		for (int a = 0; a < board.length; a++) 
+			for (int b = 0; b < board.length; b++)
+				if (board[a][b].equals("-"))
+					return false;
+		return true;
+	}
+	
+	public static void main(String[] args) {
+		
+		String[][] board = new String[3][3];
+		String[] possibleMoves = {"A1", "A2", "A3", "B1", "B2", "B3", "C1", "C2", "C3"};
+		int winner = 0;
+		
+		boolean gameIsOver = false;
+		
+		resetBoard(board);
+		printBoard(board);
+		System.out.println(); //spacing
+		
+		while (!gameIsOver) {
+			
+			playerTurn(board, possibleMoves, "X");
+			
+			winner = result(board);
+			
+			if (winner != 0) {
+				gameIsOver = true;
+				if (winner == 1)
+					System.out.println("Player X wins!");
+				else if (winner == 2)
+					System.out.println("Player O wins!");
+				else if (winner == 3)
+					System.out.println("Tie game!");
+				System.exit(0);
+			}
+			
+			playerTurn(board, possibleMoves, "O");
+			
+			winner = result(board);
+			
+			if (winner != 0) {
+				gameIsOver = true;
+				if (winner == 1)
+					System.out.println("Player X wins!");
+				else if (winner == 2)
+					System.out.println("Player O wins!");
+				else if (winner == 3)
+					System.out.println("Tie game!");
+				System.exit(0);
+			}
+			
+		}
+		
+	}
+
+}
